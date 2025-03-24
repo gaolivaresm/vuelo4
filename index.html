@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equilibra y Asciende</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/ec/Int%C3%A9rieur_montgolfi%C3%A8re.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+        }
+        .container {
+            display: inline-block;
+            padding: 30px;
+            border: 2px solid #4682b4;
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.9); /* Fondo semi-transparente */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            position: relative;
+            max-width: 100%; /* Asegurar que el contenedor sea responsive */
+        }
+        h1 {
+            color: #4682b4;
+            margin-bottom: 20px;
+            font-size: calc(2rem + 0.5vw); /* Tamaño de fuente adaptable */
+        }
+        button {
+            padding: 12px 20px;
+            background-color: #4682b4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s, transform 0.3s;
+            font-size: 1rem; /* Tamaño de fuente adaptable */
+        }
+        button:hover {
+            background-color: #36648b;
+            transform: scale(1.05);
+        }
+        input {
+            padding: 10px;
+            margin: 5px;
+            width: 100%; /* Hacer que los inputs ocupen todo el ancho del contenedor */
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 1rem; /* Tamaño de fuente adaptable */
+        }
+        #resultado {
+            margin-top: 20px;
+            font-weight: bold;
+            min-height: 24px;
+            font-size: calc(1.1rem + 0.2vw); /* Tamaño de fuente adaptable */
+        }
+        .correcto {
+            color: #2e8b57;
+        }
+        .error {
+            color: #ff4500;
+        }
+        .info-viento {
+            background-color: #e6f2ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: calc(1rem + 0.2vw); /* Tamaño de fuente adaptable */
+        }
+        label {
+            display: block; /* Cambiar a bloque para mejor compatibilidad móvil */
+            margin-bottom: 5px;
+            font-size: calc(1rem + 0.2vw); /* Tamaño de fuente adaptable */
+        }
+        .contador {
+            font-size: calc(1.5rem + 0.2vw); /* Tamaño de fuente adaptable */
+            font-weight: bold;
+            margin-top: 20px;
+            background-color: #e6f2ff;
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .mensaje {
+            margin-top: 20px;
+            font-size: calc(1.2rem + 0.2vw); /* Tamaño de fuente adaptable */
+            font-style: italic;
+        }
+        .amarillo {
+            background-color: #ffd700 !important;
+        }
+        .amarillo:hover {
+            background-color: #e6c300 !important;
+        }
+        .gris {
+            background-color: #a9a9a9 !important;
+        }
+        .gris:hover {
+            background-color: #808080 !important;
+        }
+        .oculto {
+            display: none;
+        }
+        .felicitaciones {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2e8b57;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+            animation: celebrar 2s infinite;
+        }
+        @keyframes celebrar {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Equilibra y Asciende</h1>
+        <div class="info-viento">
+            <p><strong>Fuerza del viento:</strong> <span id="viento-polar">r = 10, θ = 225°</span></p>
+            <button onclick="mostrarPista()" class="amarillo">💡 Mostrar Pista</button>
+        </div>
+        <p>Ingresa las reacciones necesarias para equilibrar el sistema estructural:</p>
+        <div>
+            <label for="reaccion-x">Reacción X (horizontal):</label>
+            <input type="text" id="reaccion-x" placeholder="Ej: 7.07">
+        </div>
+        <div>
+            <label for="reaccion-y">Reacción Y (vertical):</label>
+            <input type="text" id="reaccion-y" placeholder="Ej: 7.07">
+        </div>
+        <div>
+            <button onclick="verificar()">Verificar Equilibrio</button>
+            <button onclick="nuevoViento()" class="verde">Cambiar Viento</button>
+        </div>
+        <p id="resultado"></p>
+        <div class="contador">
+            <strong>Vientos Superados:</strong> <span id="contador-vientos">0 / 5</span>
+        </div>
+        <p class="mensaje" id="mensaje"></p>
+        <button onclick="mostrarAyuda()" class="amarillo">❓ Ayuda</button>
+        <button id="descargar-btn" onclick="solicitarNombreYDescargar()" class="gris oculto">Descargar Ruta</button>
+        <div id="felicitaciones" class="oculto felicitaciones">
+            🎉 ¡Felicidades! Completaste todas las etapas. ¡Eres un experto en equilibrio!
+        </div>
+        <div id="tiempo-transcurrido">
+            <strong>Tiempo transcurrido:</strong> <span id="cronometro">0 segundos</span>
+        </div>
+    </div>
+    <script>
+        // Variables globales
+        let vientoActual = { r1: 10, theta1: 225, r2: null, theta2: null };
+        let contadorSuperados = 0;
+        const maxVientosEtapa1 = 5;
+        const maxVientosEtapa2 = 2;
+        let esEtapa2 = false;
+        let pistasPedidas = 0;
+        let reintentoPermitido = true;
+        let tiempoInicio = Date.now();
+        let cronometroInterval;
+        const historial = [];
+
+        // Función para redondear valores
+        function redondear(valor) {
+            return Math.round(valor * 100) / 100;
+        }
+
+        // Actualizar la UI del viento
+        function actualizarVientoUI() {
+            if (esEtapa2) {
+                document.getElementById('viento-polar').textContent = 
+                    `Viento 1: r = ${vientoActual.r1}, θ = ${vientoActual.theta1}° | Viento 2: r = ${vientoActual.r2}, θ = ${vientoActual.theta2}°`;
+            } else {
+                document.getElementById('viento-polar').textContent = 
+                    `r = ${vientoActual.r1}, θ = ${vientoActual.theta1}°`;
+            }
+        }
+
+        // Calcular componentes cartesianas
+        function calcularComponentes(viento) {
+            const radianes = viento.theta * Math.PI / 180;
+            const vx = redondear(viento.r * Math.cos(radianes));
+            const vy = redondear(viento.r * Math.sin(radianes));
+            return { vx, vy };
+        }
+
+        // Verificar equilibrio
+        function verificar() {
+            const valorX = document.getElementById('reaccion-x').value.replace(',', '.');
+            const valorY = document.getElementById('reaccion-y').value.replace(',', '.');
+            if (isNaN(valorX) || isNaN(valorY) || valorX === '' || valorY === '') {
+                document.getElementById('resultado').textContent = "❌ Por favor ingresa valores numéricos válidos.";
+                document.getElementById('resultado').className = "error";
+                mostrarMensaje("Por favor, revisa tus entradas y vuelve a intentarlo.", "error");
+                return;
+            }
+            const reaccionX = redondear(parseFloat(valorX));
+            const reaccionY = redondear(parseFloat(valorY));
+            let totalX = 0, totalY = 0;
+            if (esEtapa2) {
+                const { vx: vx1, vy: vy1 } = calcularComponentes({ r: vientoActual.r1, theta: vientoActual.theta1 });
+                const { vx: vx2, vy: vy2 } = calcularComponentes({ r: vientoActual.r2, theta: vientoActual.theta2 });
+                totalX = redondear(vx1 + vx2);
+                totalY = redondear(vy1 + vy2);
+            } else {
+                const { vx, vy } = calcularComponentes({ r: vientoActual.r1, theta: vientoActual.theta1 });
+                totalX = vx;
+                totalY = vy;
+            }
+            const errorX = redondear(reaccionX + totalX);
+            const errorY = redondear(reaccionY + totalY);
+            const resultado = document.getElementById('resultado');
+            const tolerancia = 0.005;
+            if (Math.abs(errorX) <= tolerancia && Math.abs(errorY) <= tolerancia) {
+                resultado.textContent = "✅ ¡Perfecto! Tu estructura está en equilibrio total.";
+                resultado.className = "correcto";
+                contadorSuperados++;
+                document.getElementById('contador-vientos').textContent = `${contadorSuperados} / ${esEtapa2 ? maxVientosEtapa2 : maxVientosEtapa1}`;
+                mostrarMensaje("¡Excelente trabajo!", "correcto");
+                historial.push({ tipo: "acierto", viento: vientoActual, reaccionX, reaccionY, tiempo: Date.now() - tiempoInicio });
+                if ((esEtapa2 && contadorSuperados === maxVientosEtapa2) || (!esEtapa2 && contadorSuperados === maxVientosEtapa1)) {
+                    if (!esEtapa2) {
+                        esEtapa2 = true;
+                        contadorSuperados = 0;
+                        document.getElementById('contador-vientos').textContent = `${contadorSuperados} / ${maxVientosEtapa2}`;
+                        mostrarMensaje("¡Ahora avanzas a la segunda etapa!", "correcto");
+                    } else {
+                        mostrarFelicitaciones();
+                    }
+                }
+                nuevoViento();
+            } else {
+                historial.push({ tipo: "error", viento: vientoActual, reaccionX, reaccionY, tiempo: Date.now() - tiempoInicio });
+                if (reintentoPermitido) {
+                    resultado.textContent = `❌ Desequilibrio detectado: Intenta de nuevo.`;
+                    resultado.className = "error";
+                    mostrarMensaje("Sigue intentando. ¡Estás cerca!", "error");
+                    reintentoPermitido = false;
+                } else {
+                    resultado.textContent = `❌ Fallaste este viento. Pasando al siguiente...`;
+                    resultado.className = "error";
+                    mostrarMensaje("No te desanimes. ¡El próximo será mejor!", "error");
+                    reintentoPermitido = true;
+                    nuevoViento();
+                }
+            }
+        }
+
+        // Cambiar viento
+        function nuevoViento() {
+            if (esEtapa2) {
+                const angulosPosibles = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
+                vientoActual.theta1 = angulosPosibles[Math.floor(Math.random() * angulosPosibles.length)];
+                vientoActual.r1 = Math.floor(Math.random() * 16) + 5;
+                vientoActual.theta2 = angulosPosibles[Math.floor(Math.random() * angulosPosibles.length)];
+                vientoActual.r2 = Math.floor(Math.random() * 16) + 5;
+            } else {
+                const angulosPosibles = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
+                vientoActual.theta1 = angulosPosibles[Math.floor(Math.random() * angulosPosibles.length)];
+                vientoActual.r1 = Math.floor(Math.random() * 16) + 5;
+            }
+            actualizarVientoUI();
+            document.getElementById('reaccion-x').value = "";
+            document.getElementById('reaccion-y').value = "";
+            document.getElementById('resultado').textContent = "";
+            document.getElementById('mensaje').textContent = "";
+        }
+
+        // Mostrar pista
+        function mostrarPista() {
+            pistasPedidas++;
+            if (esEtapa2) {
+                const { vx: vx1, vy: vy1 } = calcularComponentes({ r: vientoActual.r1, theta: vientoActual.theta1 });
+                const { vx: vx2, vy: vy2 } = calcularComponentes({ r: vientoActual.r2, theta: vientoActual.theta2 });
+                alert(`💡 Pista: Las componentes cartesianas son:
+Viento 1: X = ${vx1.toFixed(2)}, Y = ${vy1.toFixed(2)}
+Viento 2: X = ${vx2.toFixed(2)}, Y = ${vy2.toFixed(2)}
+Total: X = ${(vx1 + vx2).toFixed(2)}, Y = ${(vy1 + vy2).toFixed(2)}`);
+            } else {
+                const { vx, vy } = calcularComponentes({ r: vientoActual.r1, theta: vientoActual.theta1 });
+                alert(`💡 Pista: Las componentes cartesianas del viento son:
+X = ${vx.toFixed(2)}, Y = ${vy.toFixed(2)}`);
+            }
+        }
+
+        // Mostrar ayuda
+        function mostrarAyuda() {
+            if (esEtapa2) {
+                alert(`❓ Paso a paso para equilibrar dos vientos:
+1. Observa las fuerzas de los dos vientos (r1, θ1 y r2, θ2).
+2. Calcula las componentes cartesianas (X, Y) de cada viento usando:
+   - X = r * cos(θ)
+   - Y = r * sin(θ)
+3. Suma las componentes de ambos vientos:
+   - Total X = X1 + X2
+   - Total Y = Y1 + Y2
+4. Ingresa las reacciones opuestas a las componentes totales:
+   - Reacción X = -Total X
+   - Reacción Y = -Total Y
+5. Verifica tu respuesta.`);
+            } else {
+                alert(`❓ Paso a paso para equilibrar un viento:
+1. Observa la fuerza del viento (r, θ).
+2. Calcula las componentes cartesianas (X, Y) usando:
+   - X = r * cos(θ)
+   - Y = r * sin(θ)
+3. Ingresa las reacciones opuestas a las componentes:
+   - Reacción X = -X
+   - Reacción Y = -Y
+4. Verifica tu respuesta.`);
+            }
+        }
+
+        // Solicitar nombre y descargar datos
+        function solicitarNombreYDescargar() {
+            const nombre = prompt("Por favor, ingresa tu nombre:");
+            if (!nombre) {
+                alert("Debes ingresar un nombre para descargar el archivo.");
+                return;
+            }
+            const tiempoFinal = Date.now() - tiempoInicio;
+            const aciertos = historial.filter(h => h.tipo === "acierto").length;
+            const errores = historial.filter(h => h.tipo === "error").length;
+            const pistasPenalizacion = pistasPedidas * 0.5; // Cada pista resta medio acierto
+            const puntuacionFinal = Math.max(0, aciertos - errores - pistasPenalizacion); // Evitar puntajes negativos
+            const datosJSON = JSON.stringify({
+                nombre,
+                aciertos,
+                errores,
+                pistasPedidas,
+                tiempoTotal: `${(tiempoFinal / 1000).toFixed(2)} segundos`,
+                puntuacionFinal,
+                historial
+            }, null, 2);
+            const blob = new Blob([datosJSON], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${nombre}-ruta-equilibrio.json`; // Incluir el nombre en el archivo
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Mostrar mensaje
+        function mostrarMensaje(mensaje, tipo) {
+            const mensajeElement = document.getElementById('mensaje');
+            mensajeElement.textContent = mensaje;
+            mensajeElement.style.color = tipo === "correcto" ? "#2e8b57" : "#ff4500";
+        }
+
+        // Mostrar felicitaciones
+        function mostrarFelicitaciones() {
+            clearInterval(cronometroInterval); // Detener el cronómetro
+            document.getElementById('felicitaciones').classList.remove('oculto');
+            document.getElementById('descargar-btn').classList.remove('oculto');
+        }
+
+        // Inicializar el cronómetro
+        function iniciarCronometro() {
+            cronometroInterval = setInterval(() => {
+                const tiempoTranscurrido = Date.now() - tiempoInicio;
+                document.getElementById('cronometro').textContent = `${(tiempoTranscurrido / 1000).toFixed(2)} segundos`;
+            }, 100);
+        }
+
+        // Inicializar
+        actualizarVientoUI();
+        iniciarCronometro();
+    </script>
+</body>
+</html>
