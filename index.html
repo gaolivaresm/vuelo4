@@ -1,380 +1,1010 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equilibra y Asciende</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/ec/Int%C3%A9rieur_montgolfi%C3%A8re.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            height: 100vh;
-        }
-        .container {
-            display: inline-block;
-            padding: 30px;
-            border: 2px solid #4682b4;
-            border-radius: 15px;
-            background-color: rgba(255, 255, 255, 0.9); /* Fondo semi-transparente */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            position: relative;
-            max-width: 100%; /* Asegurar que el contenedor sea responsive */
-        }
-        h1 {
-            color: #4682b4;
-            margin-bottom: 20px;
-            font-size: calc(2rem + 0.5vw); /* Tamaño de fuente adaptable */
-        }
-        button {
-            padding: 12px 20px;
-            background-color: #4682b4;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin: 10px;
-            transition: background-color 0.3s, transform 0.3s;
-            font-size: 1rem; /* Tamaño de fuente adaptable */
-        }
-        button:hover {
-            background-color: #36648b;
-            transform: scale(1.05);
-        }
-        input {
-            padding: 10px;
-            margin: 5px;
-            width: 100%; /* Hacer que los inputs ocupen todo el ancho del contenedor */
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            text-align: center;
-            font-size: 1rem; /* Tamaño de fuente adaptable */
-        }
-        #resultado {
-            margin-top: 20px;
-            font-weight: bold;
-            min-height: 24px;
-            font-size: calc(1.1rem + 0.2vw); /* Tamaño de fuente adaptable */
-        }
-        .correcto {
-            color: #2e8b57;
-        }
-        .error {
-            color: #ff4500;
-        }
-        .info-viento {
-            background-color: #e6f2ff;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            font-size: calc(1rem + 0.2vw); /* Tamaño de fuente adaptable */
-        }
-        label {
-            display: block; /* Cambiar a bloque para mejor compatibilidad móvil */
-            margin-bottom: 5px;
-            font-size: calc(1rem + 0.2vw); /* Tamaño de fuente adaptable */
-        }
-        .contador {
-            font-size: calc(1.5rem + 0.2vw); /* Tamaño de fuente adaptable */
-            font-weight: bold;
-            margin-top: 20px;
-            background-color: #e6f2ff;
-            padding: 10px;
-            border-radius: 10px;
-            display: inline-block;
-        }
-        .mensaje {
-            margin-top: 20px;
-            font-size: calc(1.2rem + 0.2vw); /* Tamaño de fuente adaptable */
-            font-style: italic;
-        }
-        .amarillo {
-            background-color: #ffd700 !important;
-        }
-        .amarillo:hover {
-            background-color: #e6c300 !important;
-        }
-        .gris {
-            background-color: #a9a9a9 !important;
-        }
-        .gris:hover {
-            background-color: #808080 !important;
-        }
-        .oculto {
-            display: none;
-        }
-        .felicitaciones {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #2e8b57;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
-            animation: celebrar 2s infinite;
-        }
-        @keyframes celebrar {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Equilibra y Asciende</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e1117;
+    --surface: #181d27;
+    --surface2: #1f2535;
+    --border: #2a3245;
+    --accent: #4f9cf9;
+    --accent2: #7c3aed;
+    --gold: #f59e0b;
+    --green: #10b981;
+    --red: #ef4444;
+    --text: #e8ecf4;
+    --muted: #6b7a99;
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 48px;
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(79,156,249,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(124,58,237,0.05) 0%, transparent 60%);
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+    position: relative;
+  }
+  .header-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-size: clamp(22px, 5vw, 32px);
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    line-height: 1.15;
+  }
+  .header h1 span { color: var(--accent); }
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+    max-width: 400px;
+    line-height: 1.6;
+  }
+
+  /* ── Stage badge ── */
+  .stage-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 5px 14px 5px 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    transition: all 0.4s ease;
+  }
+  .stage-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ── Main card ── */
+  .card {
+    width: 100%;
+    max-width: 520px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  /* ── Wind panel ── */
+  .wind-panel {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 20px;
+  }
+  .wind-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .wind-forces {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .force-chip {
+    flex: 1;
+    min-width: 140px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .force-chip::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--accent);
+    border-radius: 2px 0 0 2px;
+  }
+  .force-chip.force-2::before { background: var(--accent2); }
+  .force-chip-label {
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 4px;
+    font-family: var(--mono);
+  }
+  .force-polar {
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .force-polar span { color: var(--accent); }
+  .force-chip.force-2 .force-polar span { color: var(--accent2); }
+
+  /* ── Hint button ── */
+  .hint-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+  }
+  .btn-hint {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: none;
+    border: 1px dashed var(--border);
+    color: var(--gold);
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-hint:hover { border-color: var(--gold); background: rgba(245,158,11,0.05); }
+  .btn-hint .penalty-tag {
+    font-size: 9px;
+    color: var(--red);
+    opacity: 0.7;
+  }
+
+  /* ── Form section ── */
+  .form-section {
+    padding: 24px;
+  }
+
+  .formula-hint {
+    background: rgba(79,156,249,0.06);
+    border: 1px solid rgba(79,156,249,0.15);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.8;
+  }
+  .formula-hint strong { color: var(--accent); }
+
+  .fields-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .field-group label {
+    display: block;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .field-group input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field-group input:focus { border-color: var(--accent); }
+  .field-group input.ok { border-color: var(--green); }
+  .field-group input.err { border-color: var(--red); }
+
+  /* ── Feedback box ── */
+  .feedback {
+    min-height: 60px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    line-height: 1.6;
+    transition: all 0.3s;
+    display: none;
+  }
+  .feedback.visible { display: block; }
+  .feedback.fb-ok { border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.05); }
+  .feedback.fb-err { border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.05); }
+  .feedback.fb-info { border-color: rgba(79,156,249,0.3); background: rgba(79,156,249,0.05); }
+
+  .fb-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .fb-ok .fb-title { color: var(--green); }
+  .fb-err .fb-title { color: var(--red); }
+  .fb-info .fb-title { color: var(--accent); }
+
+  .fb-detail {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .fb-detail .val-ok { color: var(--green); }
+  .fb-detail .val-err { color: var(--red); }
+
+  /* ── Buttons ── */
+  .btn-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+  }
+  .btn-verify {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    letter-spacing: 0.2px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-verify:hover, .btn-verify:active { background: #3b8de8; }
+  .btn-change {
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: var(--mono);
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-change:hover, .btn-change:active { border-color: var(--muted); color: var(--text); }
+
+  /* ── Progress bar ── */
+  .progress-section {
+    padding: 0 24px 20px;
+  }
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .progress-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .progress-count {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+  }
+  .progress-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  /* ── Footer stats ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 1px;
+    background: var(--border);
+    border-top: 1px solid var(--border);
+  }
+  .stat-cell {
+    background: var(--surface);
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-val {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .stat-lbl {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Stage transition overlay ── */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 60px 16px 32px;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .overlay.show { opacity: 1; pointer-events: all; }
+  .overlay-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 32px;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+    transform: translateY(20px);
+    transition: transform 0.3s;
+  }
+  .overlay.show .overlay-card { transform: translateY(0); }
+  .overlay-icon { font-size: 40px; margin-bottom: 16px; }
+  .overlay-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+  .overlay-body {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+  .overlay-body code {
+    font-family: var(--mono);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .btn-overlay {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 13px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-overlay:hover { background: #3b8de8; }
+
+  /* ── Final celebration ── */
+  .final-panel {
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+    margin-top: 20px;
+    display: none;
+  }
+  .final-panel.show { display: block; }
+  .final-title {
+    font-size: clamp(24px,6vw,36px);
+    font-weight: 700;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, var(--gold), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+  .final-sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .score-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 16px;
+  }
+  .score-item { text-align: center; }
+  .score-num {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 700;
+  }
+  .score-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .btn-download {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 24px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-download:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── Help modal ── */
+  .help-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 16px;
+  }
+  .help-btn:hover { border-color: var(--muted); color: var(--text); }
+
+  /* ── Timer ── */
+  .timer {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 14px;
+  }
+  .timer span { color: var(--text); }
+
+  /* ── Mobile fixes ── */
+
+  /* Prevent iOS zoom on input focus (font-size must be >= 16px — already set) */
+  /* Ensure overlay doesn't get stuck behind keyboard */
+  .overlay {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+  }
+  .overlay-card {
+    margin: 16px;
+  }
+
+  /* Tap targets: all interactive elements min 44px tall */
+  .btn-hint {
+    min-height: 44px;
+    padding: 10px 14px;
+  }
+  .btn-hint .penalty-tag { font-size: 10px; }
+  .btn-verify, .btn-change {
+    min-height: 52px;
+  }
+  .help-btn {
+    min-height: 44px;
+    padding: 10px 16px;
+  }
+  .field-group input {
+    min-height: 52px;
+  }
+
+  /* Prevent feedback text from overflowing on narrow screens */
+  .fb-detail {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  #fb-main {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Stats: prevent number clipping on very small screens */
+  .stat-val { font-size: clamp(14px, 4vw, 18px); }
+  .stat-lbl { font-size: clamp(9px, 2vw, 10px); }
+
+  /* Safe area for notched phones (bottom bar) */
+  body {
+    padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Narrow screens: stack fields and buttons */
+  @media (max-width: 360px) {
+    .fields-row { grid-template-columns: 1fr; }
+    .btn-row { grid-template-columns: 1fr; }
+    .force-polar { font-size: 14px; }
+    .score-card { grid-template-columns: 1fr; gap: 8px; }
+  }
+
+  /* Mid-range phones (360–480px) — keep 2-col but tighten spacing */
+  @media (max-width: 480px) {
+    .form-section { padding: 16px; }
+    .wind-panel { padding: 14px; }
+    .progress-section { padding: 0 16px 16px; }
+    .header { margin-bottom: 16px; }
+    .stage-badge { margin-bottom: 14px; }
+    /* Feedback detail: switch from pipe-separated to stacked lines */
+    .fb-detail { line-height: 2; }
+    /* Overlay card: more breathing room */
+    .overlay-card { padding: 28px 20px; }
+    /* Formula hint: allow wrapping gracefully */
+    .formula-hint { font-size: 11px; }
+    /* Stats row: readable on 360px */
+    .stats-row { grid-template-columns: repeat(3,1fr); }
+    .stat-cell { padding: 12px 6px; }
+  }
+
+  /* Landscape phone: limit card height so it fits without scrolling */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .header h1 { font-size: 18px; }
+    .subtitle { display: none; }
+    .stage-badge { margin-bottom: 8px; }
+    .wind-panel { padding: 10px 14px; }
+    .form-section { padding: 12px 16px; }
+    .formula-hint { margin-bottom: 10px; padding: 8px 12px; }
+    .fields-row { margin-bottom: 10px; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>Equilibra y Asciende</h1>
-        <div class="info-viento">
-            <p><strong>Fuerza del viento:</strong> <span id="viento-polar">r = 10, θ = 225°</span></p>
-            <button onclick="mostrarPista()" class="amarillo">💡 Mostrar Pista</button>
-        </div>
-        <p>Ingresa las reacciones necesarias para equilibrar el sistema estructural:</p>
-        <div>
-            <label for="reaccion-x">Reacción X (horizontal):</label>
-            <input type="text" id="reaccion-x" placeholder="Ej: 7.07">
-        </div>
-        <div>
-            <label for="reaccion-y">Reacción Y (vertical):</label>
-            <input type="text" id="reaccion-y" placeholder="Ej: 7.07">
-        </div>
-        <div>
-            <button onclick="verificar()">Verificar Equilibrio</button>
-            <button onclick="nuevoViento()" class="verde">Cambiar Viento</button>
-        </div>
-        <p id="resultado"></p>
-        <div class="contador">
-            <strong>Vientos Superados:</strong> <span id="contador-vientos">0 / 5</span>
-        </div>
-        <p class="mensaje" id="mensaje"></p>
-        <button onclick="mostrarAyuda()" class="amarillo">❓ Ayuda</button>
-        <button id="descargar-btn" onclick="solicitarNombreYDescargar()" class="gris oculto">Descargar Ruta</button>
-        <div id="felicitaciones" class="oculto felicitaciones">
-            🎉 ¡Felicidades! Completaste todas las etapas. ¡Eres un experto en equilibrio!
-        </div>
-        <div id="tiempo-transcurrido">
-            <strong>Tiempo transcurrido:</strong> <span id="cronometro">0 segundos</span>
-        </div>
+
+<!-- Stage overlay (shown on transition + final) -->
+<div class="overlay" id="overlay">
+  <div class="overlay-card">
+    <div class="overlay-icon" id="overlay-icon">🌬️</div>
+    <div class="overlay-title" id="overlay-title">Título</div>
+    <div class="overlay-body" id="overlay-body">Cuerpo</div>
+    <button class="btn-overlay" id="overlay-btn" onclick="closeOverlay()">Continuar</button>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-eyebrow">ARQ 1331 · Estructura 1</div>
+  <h1>Equilibra <span>&</span> Asciende</h1>
+  <p class="subtitle">Descompón la fuerza del viento en sus componentes cartesianas e ingresa las reacciones de equilibrio.</p>
+</div>
+
+<div class="stage-badge" id="stage-badge">
+  <div class="stage-dot"></div>
+  <span id="stage-label">Etapa 1 — Una fuerza</span>
+</div>
+
+<!-- Main card -->
+<div class="card">
+
+  <!-- Wind display -->
+  <div class="wind-panel">
+    <div class="wind-label">Fuerza del viento</div>
+    <div class="wind-forces" id="wind-forces">
+      <div class="force-chip force-1" id="chip1">
+        <div class="force-chip-label">VIENTO 1</div>
+        <div class="force-polar" id="polar1">r = <span id="r1">10</span>, θ = <span id="t1">225</span>°</div>
+      </div>
+      <!-- chip2 shown in stage 2 -->
     </div>
-    <script>
-        // Variables globales
-        let vientoActual = { r1: 10, theta1: 225, r2: null, theta2: null };
-        let contadorSuperados = 0;
-        const maxVientosEtapa1 = 5;
-        const maxVientosEtapa2 = 2;
-        let esEtapa2 = false;
-        let pistasPedidas = 0;
-        let reintentoPermitido = true;
-        let tiempoInicio = Date.now();
-        let cronometroInterval;
-        const historial = [];
+    <div class="hint-row">
+      <button class="btn-hint" onclick="mostrarPista()">
+        💡 Mostrar pista
+        <span class="penalty-tag">−0.5 pts</span>
+      </button>
+    </div>
+  </div>
 
-        // Función para redondear valores
-        function redondear(valor) {
-            return Math.round(valor * 100) / 100;
-        }
+  <!-- Formula reminder -->
+  <div class="form-section">
+    <div class="formula-hint" id="formula-hint">
+      Recuerda: <strong>Rx = −r · cos(θ)</strong> &nbsp;|&nbsp; <strong>Ry = −r · sin(θ)</strong>
+    </div>
 
-        // Actualizar la UI del viento
-        function actualizarVientoUI() {
-            if (esEtapa2) {
-                document.getElementById('viento-polar').textContent = 
-                    `Viento 1: r = ${vientoActual.r1}, θ = ${vientoActual.theta1}° | Viento 2: r = ${vientoActual.r2}, θ = ${vientoActual.theta2}°`;
-            } else {
-                document.getElementById('viento-polar').textContent = 
-                    `r = ${vientoActual.r1}, θ = ${vientoActual.theta1}°`;
-            }
-        }
+    <!-- Inputs -->
+    <div class="fields-row">
+      <div class="field-group">
+        <label for="inp-x">Reacción X (kgf)</label>
+        <input type="text" id="inp-x" placeholder="0.00"
+          inputmode="decimal" autocomplete="off"
+          autocorrect="off" autocapitalize="off" spellcheck="false">
+      </div>
+      <div class="field-group">
+        <label for="inp-y">Reacción Y (kgf)</label>
+        <input type="text" id="inp-y" placeholder="0.00"
+          inputmode="decimal" autocomplete="off"
+          autocorrect="off" autocapitalize="off" spellcheck="false">
+      </div>
+    </div>
 
-        // Calcular componentes cartesianas
-        function calcularComponentes(viento) {
-            const radianes = viento.theta * Math.PI / 180;
-            const vx = redondear(viento.r * Math.cos(radianes));
-            const vy = redondear(viento.r * Math.sin(radianes));
-            return { vx, vy };
-        }
+    <!-- Feedback -->
+    <div class="feedback" id="feedback">
+      <div class="fb-title" id="fb-title"></div>
+      <div id="fb-main"></div>
+      <div class="fb-detail" id="fb-detail"></div>
+    </div>
 
-        // Verificar equilibrio
-        function verificar() {
-            const valorX = document.getElementById('reaccion-x').value.replace(',', '.');
-            const valorY = document.getElementById('reaccion-y').value.replace(',', '.');
-            if (isNaN(valorX) || isNaN(valorY) || valorX === '' || valorY === '') {
-                document.getElementById('resultado').textContent = "❌ Por favor ingresa valores numéricos válidos.";
-                document.getElementById('resultado').className = "error";
-                mostrarMensaje("Por favor, revisa tus entradas y vuelve a intentarlo.", "error");
-                return;
-            }
-            const reaccionX = redondear(parseFloat(valorX));
-            const reaccionY = redondear(parseFloat(valorY));
-            let totalX = 0, totalY = 0;
-            if (esEtapa2) {
-                const { vx: vx1, vy: vy1 } = calcularComponentes({ r: vientoActual.r1, theta: vientoActual.theta1 });
-                const { vx: vx2, vy: vy2 } = calcularComponentes({ r: vientoActual.r2, theta: vientoActual.theta2 });
-                totalX = redondear(vx1 + vx2);
-                totalY = redondear(vy1 + vy2);
-            } else {
-                const { vx, vy } = calcularComponentes({ r: vientoActual.r1, theta: vientoActual.theta1 });
-                totalX = vx;
-                totalY = vy;
-            }
-            const errorX = redondear(reaccionX + totalX);
-            const errorY = redondear(reaccionY + totalY);
-            const resultado = document.getElementById('resultado');
-            const tolerancia = 0.005;
-            if (Math.abs(errorX) <= tolerancia && Math.abs(errorY) <= tolerancia) {
-                resultado.textContent = "✅ ¡Perfecto! Tu estructura está en equilibrio total.";
-                resultado.className = "correcto";
-                contadorSuperados++;
-                document.getElementById('contador-vientos').textContent = `${contadorSuperados} / ${esEtapa2 ? maxVientosEtapa2 : maxVientosEtapa1}`;
-                mostrarMensaje("¡Excelente trabajo!", "correcto");
-                historial.push({ tipo: "acierto", viento: vientoActual, reaccionX, reaccionY, tiempo: Date.now() - tiempoInicio });
-                if ((esEtapa2 && contadorSuperados === maxVientosEtapa2) || (!esEtapa2 && contadorSuperados === maxVientosEtapa1)) {
-                    if (!esEtapa2) {
-                        esEtapa2 = true;
-                        contadorSuperados = 0;
-                        document.getElementById('contador-vientos').textContent = `${contadorSuperados} / ${maxVientosEtapa2}`;
-                        mostrarMensaje("¡Ahora avanzas a la segunda etapa!", "correcto");
-                    } else {
-                        mostrarFelicitaciones();
-                    }
-                }
-                nuevoViento();
-            } else {
-                historial.push({ tipo: "error", viento: vientoActual, reaccionX, reaccionY, tiempo: Date.now() - tiempoInicio });
-                if (reintentoPermitido) {
-                    resultado.textContent = `❌ Desequilibrio detectado: Intenta de nuevo.`;
-                    resultado.className = "error";
-                    mostrarMensaje("Sigue intentando. ¡Estás cerca!", "error");
-                    reintentoPermitido = false;
-                } else {
-                    resultado.textContent = `❌ Fallaste este viento. Pasando al siguiente...`;
-                    resultado.className = "error";
-                    mostrarMensaje("No te desanimes. ¡El próximo será mejor!", "error");
-                    reintentoPermitido = true;
-                    nuevoViento();
-                }
-            }
-        }
+    <!-- Buttons -->
+    <div class="btn-row">
+      <button class="btn-verify" onclick="verificar()">Verificar equilibrio</button>
+      <button class="btn-change" onclick="nuevoViento()">↺ Cambiar</button>
+    </div>
+  </div>
 
-        // Cambiar viento
-        function nuevoViento() {
-            if (esEtapa2) {
-                const angulosPosibles = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
-                vientoActual.theta1 = angulosPosibles[Math.floor(Math.random() * angulosPosibles.length)];
-                vientoActual.r1 = Math.floor(Math.random() * 16) + 5;
-                vientoActual.theta2 = angulosPosibles[Math.floor(Math.random() * angulosPosibles.length)];
-                vientoActual.r2 = Math.floor(Math.random() * 16) + 5;
-            } else {
-                const angulosPosibles = [0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330];
-                vientoActual.theta1 = angulosPosibles[Math.floor(Math.random() * angulosPosibles.length)];
-                vientoActual.r1 = Math.floor(Math.random() * 16) + 5;
-            }
-            actualizarVientoUI();
-            document.getElementById('reaccion-x').value = "";
-            document.getElementById('reaccion-y').value = "";
-            document.getElementById('resultado').textContent = "";
-            document.getElementById('mensaje').textContent = "";
-        }
+  <!-- Progress -->
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-label">Progreso de etapa</span>
+      <span class="progress-count" id="prog-count">0 / 5</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="prog-fill" style="width:0%"></div>
+    </div>
+  </div>
 
-        // Mostrar pista
-        function mostrarPista() {
-            pistasPedidas++;
-            if (esEtapa2) {
-                const { vx: vx1, vy: vy1 } = calcularComponentes({ r: vientoActual.r1, theta: vientoActual.theta1 });
-                const { vx: vx2, vy: vy2 } = calcularComponentes({ r: vientoActual.r2, theta: vientoActual.theta2 });
-                alert(`💡 Pista: Las componentes cartesianas son:
-Viento 1: X = ${vx1.toFixed(2)}, Y = ${vy1.toFixed(2)}
-Viento 2: X = ${vx2.toFixed(2)}, Y = ${vy2.toFixed(2)}
-Total: X = ${(vx1 + vx2).toFixed(2)}, Y = ${(vy1 + vy2).toFixed(2)}`);
-            } else {
-                const { vx, vy } = calcularComponentes({ r: vientoActual.r1, theta: vientoActual.theta1 });
-                alert(`💡 Pista: Las componentes cartesianas del viento son:
-X = ${vx.toFixed(2)}, Y = ${vy.toFixed(2)}`);
-            }
-        }
+  <!-- Stats footer -->
+  <div class="stats-row">
+    <div class="stat-cell">
+      <div class="stat-val" id="stat-ok">0</div>
+      <div class="stat-lbl">Aciertos</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" id="stat-err">0</div>
+      <div class="stat-lbl">Errores</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" id="stat-pist">0</div>
+      <div class="stat-lbl">Pistas</div>
+    </div>
+  </div>
+</div>
 
-        // Mostrar ayuda
-        function mostrarAyuda() {
-            if (esEtapa2) {
-                alert(`❓ Paso a paso para equilibrar dos vientos:
-1. Observa las fuerzas de los dos vientos (r1, θ1 y r2, θ2).
-2. Calcula las componentes cartesianas (X, Y) de cada viento usando:
-   - X = r * cos(θ)
-   - Y = r * sin(θ)
-3. Suma las componentes de ambos vientos:
-   - Total X = X1 + X2
-   - Total Y = Y1 + Y2
-4. Ingresa las reacciones opuestas a las componentes totales:
-   - Reacción X = -Total X
-   - Reacción Y = -Total Y
-5. Verifica tu respuesta.`);
-            } else {
-                alert(`❓ Paso a paso para equilibrar un viento:
-1. Observa la fuerza del viento (r, θ).
-2. Calcula las componentes cartesianas (X, Y) usando:
-   - X = r * cos(θ)
-   - Y = r * sin(θ)
-3. Ingresa las reacciones opuestas a las componentes:
-   - Reacción X = -X
-   - Reacción Y = -Y
-4. Verifica tu respuesta.`);
-            }
-        }
+<button class="help-btn" onclick="mostrarAyuda()">? Ayuda</button>
+<div class="timer">Tiempo: <span id="cronometro">0s</span></div>
 
-        // Solicitar nombre y descargar datos
-        function solicitarNombreYDescargar() {
-            const nombre = prompt("Por favor, ingresa tu nombre:");
-            if (!nombre) {
-                alert("Debes ingresar un nombre para descargar el archivo.");
-                return;
-            }
-            const tiempoFinal = Date.now() - tiempoInicio;
-            const aciertos = historial.filter(h => h.tipo === "acierto").length;
-            const errores = historial.filter(h => h.tipo === "error").length;
-            const pistasPenalizacion = pistasPedidas * 0.5; // Cada pista resta medio acierto
-            const puntuacionFinal = Math.max(0, aciertos - errores - pistasPenalizacion); // Evitar puntajes negativos
-            const datosJSON = JSON.stringify({
-                nombre,
-                aciertos,
-                errores,
-                pistasPedidas,
-                tiempoTotal: `${(tiempoFinal / 1000).toFixed(2)} segundos`,
-                puntuacionFinal,
-                historial
-            }, null, 2);
-            const blob = new Blob([datosJSON], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${nombre}-ruta-equilibrio.json`; // Incluir el nombre en el archivo
-            a.click();
-            URL.revokeObjectURL(url);
-        }
+<!-- Final panel -->
+<div class="final-panel" id="final-panel">
+  <div class="final-title">¡Misión completada!</div>
+  <div class="final-sub">Dominaste el equilibrio de fuerzas en ambas etapas.</div>
+  <div class="score-card">
+    <div class="score-item">
+      <div class="score-num" id="final-ok" style="color:var(--green)">0</div>
+      <div class="score-lbl">Aciertos</div>
+    </div>
+    <div class="score-item">
+      <div class="score-num" id="final-pts" style="color:var(--gold)">0</div>
+      <div class="score-lbl">Puntaje</div>
+    </div>
+    <div class="score-item">
+      <div class="score-num" id="final-time" style="color:var(--accent)">0s</div>
+      <div class="score-lbl">Tiempo</div>
+    </div>
+  </div>
+  <button class="btn-download" onclick="solicitarNombreYDescargar()">
+    ↓ Descargar resultados
+  </button>
+</div>
 
-        // Mostrar mensaje
-        function mostrarMensaje(mensaje, tipo) {
-            const mensajeElement = document.getElementById('mensaje');
-            mensajeElement.textContent = mensaje;
-            mensajeElement.style.color = tipo === "correcto" ? "#2e8b57" : "#ff4500";
-        }
+<script>
+// ── State ──
+let etapa = 1;
+let viento = { r1:10, t1:225, r2:null, t2:null };
+const MAX_E1 = 5, MAX_E2 = 2;
+let superados = 0;
+let aciertos = 0, errores = 0, pistas = 0;
+let reintentoPermitido = true;
+let tiempoInicio = Date.now();
+let timerInterval;
+const historial = [];
 
-        // Mostrar felicitaciones
-        function mostrarFelicitaciones() {
-            clearInterval(cronometroInterval); // Detener el cronómetro
-            document.getElementById('felicitaciones').classList.remove('oculto');
-            document.getElementById('descargar-btn').classList.remove('oculto');
-        }
+// ── Helpers ──
+function rnd(v){ return Math.round(v*100)/100; }
+function rad(d){ return d*Math.PI/180; }
+function compX(r,t){ return rnd(r*Math.cos(rad(t))); }
+function compY(r,t){ return rnd(r*Math.sin(rad(t))); }
 
-        // Inicializar el cronómetro
-        function iniciarCronometro() {
-            cronometroInterval = setInterval(() => {
-                const tiempoTranscurrido = Date.now() - tiempoInicio;
-                document.getElementById('cronometro').textContent = `${(tiempoTranscurrido / 1000).toFixed(2)} segundos`;
-            }, 100);
-        }
+function totalFuerza(){
+  if(etapa===2){
+    return {
+      tx: rnd(compX(viento.r1,viento.t1)+compX(viento.r2,viento.t2)),
+      ty: rnd(compY(viento.r1,viento.t1)+compY(viento.r2,viento.t2))
+    };
+  }
+  return { tx: compX(viento.r1,viento.t1), ty: compY(viento.r1,viento.t1) };
+}
 
-        // Inicializar
-        actualizarVientoUI();
-        iniciarCronometro();
-    </script>
+// ── UI updates ──
+function actualizarViento(){
+  document.getElementById('r1').textContent = viento.r1;
+  document.getElementById('t1').textContent = viento.t1;
+
+  const wf = document.getElementById('wind-forces');
+  let chip2 = document.getElementById('chip2');
+  if(etapa===2){
+    if(!chip2){
+      chip2 = document.createElement('div');
+      chip2.id = 'chip2';
+      chip2.className = 'force-chip force-2';
+      chip2.innerHTML = `<div class="force-chip-label">VIENTO 2</div>
+        <div class="force-polar" id="polar2">r = <span id="r2">${viento.r2}</span>, θ = <span id="t2">${viento.t2}</span>°</div>`;
+      wf.appendChild(chip2);
+    } else {
+      document.getElementById('r2').textContent = viento.r2;
+      document.getElementById('t2').textContent = viento.t2;
+    }
+    document.getElementById('formula-hint').innerHTML =
+      'Suma componentes: <strong>Rx = −(X₁+X₂)</strong> &nbsp;|&nbsp; <strong>Ry = −(Y₁+Y₂)</strong>';
+  }
+}
+
+function actualizarProgreso(){
+  const max = etapa===1 ? MAX_E1 : MAX_E2;
+  document.getElementById('prog-count').textContent = `${superados} / ${max}`;
+  document.getElementById('prog-fill').style.width = `${(superados/max)*100}%`;
+  document.getElementById('stat-ok').textContent = aciertos;
+  document.getElementById('stat-err').textContent = errores;
+  document.getElementById('stat-pist').textContent = pistas;
+}
+
+function mostrarFeedback(tipo, titulo, main, detalle){
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback visible fb-'+tipo;
+  document.getElementById('fb-title').textContent = titulo;
+  document.getElementById('fb-main').innerHTML = main;
+  document.getElementById('fb-detail').innerHTML = detalle||'';
+}
+
+function limpiarFeedback(){
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('inp-x').className = '';
+  document.getElementById('inp-y').className = '';
+}
+
+// ── Verify ──
+function verificar(){
+  const rawX = document.getElementById('inp-x').value.replace(',','.');
+  const rawY = document.getElementById('inp-y').value.replace(',','.');
+  if(rawX===''||rawY===''||isNaN(rawX)||isNaN(rawY)){
+    mostrarFeedback('err','Entrada inválida','Ingresa valores numéricos en ambos campos.','');
+    return;
+  }
+  const rx = rnd(parseFloat(rawX));
+  const ry = rnd(parseFloat(rawY));
+  const { tx, ty } = totalFuerza();
+  const expectedX = rnd(-tx);
+  const expectedY = rnd(-ty);
+  const errX = rnd(Math.abs(rx - expectedX));
+  const errY = rnd(Math.abs(ry - expectedY));
+  const TOL = 0.05;
+  const okX = errX <= TOL;
+  const okY = errY <= TOL;
+
+  document.getElementById('inp-x').className = okX ? 'ok' : 'err';
+  document.getElementById('inp-y').className = okY ? 'ok' : 'err';
+
+  if(okX && okY){
+    aciertos++;
+    superados++;
+    reintentoPermitido = true;
+    historial.push({tipo:'acierto', viento:{...viento}, rx, ry, t: Date.now()-tiempoInicio});
+
+    let detalle = `Rx = −(${tx}) = <span class="val-ok">${expectedX}</span> ✓ &nbsp; Ry = −(${ty}) = <span class="val-ok">${expectedY}</span> ✓`;
+    mostrarFeedback('ok','¡Equilibrio logrado!',
+      `La estructura está en equilibrio. ΣFx = ${rnd(tx+rx)} kgf, ΣFy = ${rnd(ty+ry)} kgf`,
+      detalle);
+    actualizarProgreso();
+
+    const max = etapa===1?MAX_E1:MAX_E2;
+    if(superados>=max){
+      setTimeout(()=>{
+        if(etapa===1) pasarEtapa2();
+        else mostrarFinal();
+      }, 1200);
+    } else {
+      setTimeout(()=>{ nuevoViento(false); }, 1400);
+    }
+  } else {
+    errores++;
+    historial.push({tipo:'error', viento:{...viento}, rx, ry, t: Date.now()-tiempoInicio});
+
+    let partes = [];
+    if(!okX) partes.push(`Rx = <span class="val-err">${rx}</span> (esperado <span class="val-ok">${expectedX}</span>, diferencia ${errX.toFixed(2)})`);
+    else partes.push(`Rx = <span class="val-ok">${rx}</span> ✓`);
+    if(!okY) partes.push(`Ry = <span class="val-err">${ry}</span> (esperado <span class="val-ok">${expectedY}</span>, diferencia ${errY.toFixed(2)})`);
+    else partes.push(`Ry = <span class="val-ok">${ry}</span> ✓`);
+
+    if(reintentoPermitido){
+      mostrarFeedback('err','Desequilibrio detectado',
+        'Revisa el cálculo. Recuerda que la reacción debe ser opuesta a la fuerza.',
+        partes.join(' &nbsp;|&nbsp; '));
+      reintentoPermitido = false;
+    } else {
+      reintentoPermitido = true;
+      mostrarFeedback('err','Viento perdido',
+        `La respuesta correcta era: Rx = ${expectedX}, Ry = ${expectedY}`,
+        partes.join(' &nbsp;|&nbsp; '));
+      setTimeout(()=>{ nuevoViento(false); }, 2000);
+    }
+    actualizarProgreso();
+  }
+}
+
+// ── New wind ──
+const ANGULOS = [0,30,45,60,90,120,135,150,180,210,225,240,270,300,315,330];
+function randAngulo(){ return ANGULOS[Math.floor(Math.random()*ANGULOS.length)]; }
+function randR(){ return Math.floor(Math.random()*16)+5; }
+
+function nuevoViento(resetFeedback=true){
+  viento.r1 = randR(); viento.t1 = randAngulo();
+  if(etapa===2){ viento.r2 = randR(); viento.t2 = randAngulo(); }
+  actualizarViento();
+  document.getElementById('inp-x').value = '';
+  document.getElementById('inp-y').value = '';
+  if(resetFeedback) limpiarFeedback();
+}
+
+// ── Hint ──
+function mostrarPista(){
+  pistas++;
+  actualizarProgreso();
+  const vx1 = compX(viento.r1,viento.t1), vy1 = compY(viento.r1,viento.t1);
+  let msg = `Viento 1: X = ${vx1}, Y = ${vy1}`;
+  if(etapa===2){
+    const vx2=compX(viento.r2,viento.t2), vy2=compY(viento.r2,viento.t2);
+    msg += `\nViento 2: X = ${vx2}, Y = ${vy2}\nTotal: X = ${rnd(vx1+vx2)}, Y = ${rnd(vy1+vy2)}`;
+  }
+  msg += `\n\nRecuerda: Reacción X = −(${etapa===2?'X₁+X₂':'X'}), Reacción Y = −(${etapa===2?'Y₁+Y₂':'Y'})`;
+
+  mostrarFeedback('info','💡 Pista (−0.5 pts deducidos)', msg.replace(/\n/g,'<br>'), '');
+}
+
+// ── Help ──
+function mostrarAyuda(){
+  showOverlay('❓','Cómo resolver',
+    `Para equilibrar un cuerpo rígido la suma de fuerzas debe ser cero:<br><br>
+    1. Calcula las componentes: <code>X = r · cos(θ)</code> y <code>Y = r · sin(θ)</code><br>
+    2. La reacción debe anular la fuerza: <code>Rx = −X</code>, <code>Ry = −Y</code><br>
+    3. En etapa 2, suma primero las componentes de ambos vientos antes de negar.<br><br>
+    Usar pistas descuenta 0.5 puntos por pista del puntaje final.`,
+  'Entendido');
+}
+
+// ── Overlays ──
+function showOverlay(icon, titulo, cuerpo, btnLabel){
+  document.getElementById('overlay-icon').textContent = icon;
+  document.getElementById('overlay-title').textContent = titulo;
+  document.getElementById('overlay-body').innerHTML = cuerpo;
+  document.getElementById('overlay-btn').textContent = btnLabel||'Continuar';
+  document.getElementById('overlay').classList.add('show');
+}
+function closeOverlay(){
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ── Stage 2 transition ──
+function pasarEtapa2(){
+  showOverlay('🌪️','¡Etapa 2 desbloqueada!',
+    `Ahora enfrentarás <strong>dos vientos simultáneos</strong>.<br><br>
+    Debes <strong>sumar las componentes</strong> de ambas fuerzas antes de calcular la reacción:<br><br>
+    <code>Rx = −(X₁ + X₂)</code><br>
+    <code>Ry = −(Y₁ + Y₂)</code><br><br>
+    Completa 2 equilibrios para terminar la misión.`,
+  'Comenzar etapa 2');
+  document.getElementById('overlay-btn').onclick = function(){
+    closeOverlay();
+    etapa = 2;
+    superados = 0;
+    document.getElementById('stage-label').textContent = 'Etapa 2 — Dos fuerzas';
+    nuevoViento();
+    actualizarProgreso();
+  };
+}
+
+// ── Final ──
+function mostrarFinal(){
+  clearInterval(timerInterval);
+  const tiempo = Math.round((Date.now()-tiempoInicio)/1000);
+  const puntos = Math.max(0, aciertos - errores - pistas*0.5);
+  document.getElementById('final-ok').textContent = aciertos;
+  document.getElementById('final-pts').textContent = puntos.toFixed(1);
+  document.getElementById('final-time').textContent = tiempo+'s';
+  document.getElementById('final-panel').classList.add('show');
+  document.querySelector('.card').style.opacity = '0.4';
+}
+
+// ── Download ──
+function solicitarNombreYDescargar(){
+  const nombre = prompt('Ingresa tu nombre para el archivo de resultados:');
+  if(!nombre){ alert('Debes ingresar un nombre.'); return; }
+  const tiempo = Math.round((Date.now()-tiempoInicio)/1000);
+  const puntos = Math.max(0, aciertos - errores - pistas*0.5);
+  const data = {
+    nombre, aciertos, errores, pistas, puntos,
+    tiempoTotal: tiempo+'s', historial
+  };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${nombre.replace(/\s+/g,'_')}-equilibrio.json`;
+  a.click();
+}
+
+// ── Timer ──
+function iniciarTimer(){
+  timerInterval = setInterval(()=>{
+    document.getElementById('cronometro').textContent =
+      Math.round((Date.now()-tiempoInicio)/1000)+'s';
+  },1000);
+}
+
+// ── Init ──
+actualizarViento();
+actualizarProgreso();
+iniciarTimer();
+
+// Enter key support
+document.getElementById('inp-y').addEventListener('keydown', e=>{ if(e.key==='Enter') verificar(); });
+document.getElementById('inp-x').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('inp-y').focus(); });
+</script>
 </body>
 </html>
